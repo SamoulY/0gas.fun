@@ -4,8 +4,9 @@ React + Vite example showing the full user flow: connect wallet, answer question
 
 ## Setup
 1. `npm install`
-2. `npm run dev`
-3. Open `http://localhost:5173`
+2. Copy `.env.example` to `.env` and set your.
+3. `npm run dev`
+4. Open `http://localhost:5173`
 
 ## Environment Variables
 Create `.env` with:

@@ -37,7 +37,7 @@
 #### 🧠 **Why It Works**
 - **Anti‑Sybil**: Questions are generated on‑the‑fly by an LLM; only humans answer them correctly and briefly.
 - **Self‑sustaining**: Ad revenue covers gas costs + rewards developers.
-- **Chain‑agnostic**: Works on any EVM chain (and soon beyond).
+- **Chain‑agnostic**: Works on any chain (and soon beyond).
 
 ---
 

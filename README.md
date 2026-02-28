@@ -1,10 +1,9 @@
 # GasFree – The Universal Gas Abstraction Layer
 
-## Pitch Deck (3 Pages)
 
 ---
 
-### Page 1: The Problem
+### The Problem
 
 **Web3’s Adoption Ceiling: Gas Fees & Sybil Attacks**
 
@@ -21,7 +20,7 @@
 
 ---
 
-### Page 2: Our Solution
+### Our Solution
 
 **GasFree = AI‑Powered Verification + Ad‑Sponsored Gas**
 
@@ -42,7 +41,7 @@
 
 ---
 
-### Page 3: Vision & Traction
+### Vision & Traction
 
 **Building the Default Gas Layer for Web3**
 

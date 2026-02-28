@@ -117,7 +117,12 @@ Before running the backend, deploy the `GasFreeAI.sol` contract using **Remix** 
    ```bash
    npm install
    ```
-3. Start the development server:
+3. Copy the environment example and fill in your values:
+   ```bash
+   cp .env.example .env
+   ```
+   Edit `.env` with your private key, contract address, and RPC URL.
+4. Start the development server:
    ```bash
    npm run dev
    ```

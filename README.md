@@ -57,7 +57,7 @@
 - ✅ Contract deployed (open source)
 
 #### 💎 **Roadmap**
-- **Now**: Multi‑chain support (Ethereum, BSC, Polygon)
+- **Now**: Multi‑chain support
 - **Next**: Decentralized relay network
 - **Future**: DAO governance & non‑EVM expansion
 

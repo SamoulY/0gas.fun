@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GasFree 本地示例</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 600px;
+            margin: 50px auto;
+            padding: 20px;
+            text-align: center;
+        }
+        button {
+            padding: 12px 24px;
+            font-size: 1.2rem;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+        #status {
+            margin-top: 20px;
+            padding: 10px;
+            border-radius: 4px;
+        }
+    </style>
+    <!-- 引入 GasFree SDK，并指定后端 API 地址（本地后端运行在 3000 端口） -->
+    <script src="gasfree.js?apiUrl=http://localhost:3000"></script>
+</head>
+<body>
+    <h1>GasFree 演示</h1>
+    <p>点击下方按钮，完成 AI 验证并观看广告，即可获得 0.001 DEV 奖励</p>
+    <button id="claimBtn">领取奖励</button>
+    <div id="status"></div>
+
+    <script>
+        document.getElementById('claimBtn').addEventListener('click', async () => {
+            // 检查是否安装了 MetaMask
+            if (!window.ethereum) {
+                alert('请安装 MetaMask 钱包');
+                return;
+            }
+            try {
+                // 请求账户
+                const accounts = await window.ethereum.request({ method: 'eth_requestAccounts' });
+                const userAddress = accounts[0];
+                document.getElementById('status').innerText = `账户: ${userAddress}`;
+
+                // 调用 GasFree 开始流程
+                GasFree.start({
+                    userAddress: userAddress,
+                    onSuccess: (result) => {
+                        document.getElementById('status').innerHTML = `
+                            ✅ 成功领取 ${result.rewardAmount} DEV<br>
+                            交易哈希: ${result.rewardTxHash}
+                        `;
+                    },
+                    onError: (error) => {
+                        document.getElementById('status').innerText = '❌ 失败: ' + error.message;
+                    }
+                });
+            } catch (err) {
+                alert('连接钱包失败: ' + err.message);
+            }
+        });
+    </script>
+</body>
+</html>

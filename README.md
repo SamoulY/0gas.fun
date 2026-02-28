@@ -66,3 +66,78 @@
 ---
 
 *For more: [GitHub](https://github.com/SamoulY/0gas.fun) · [Demo](http://0gas.fun) · [Docs](https://docs.0gas.fun)*
+
+---
+
+## 📦 Repository Structure
+- `backend/` – Node.js server (Express) handling AI verification, relay signing, and contract interaction.
+- `frontend/` – Example React app demonstrating the user flow.
+- `sdk/` – Lightweight JavaScript SDK for embedding GasFree into any DApp with one line.
+- `contract/` – Solidity smart contract (`GasFreeAI.sol`) that records user verification and ad‑watching status.
+
+---
+
+## 🚀 Getting Started
+
+### Prerequisites
+- Node.js (v18 or later)
+- npm or yarn
+- MetaMask (for frontend demo)
+- Moonbase Alpha testnet DEV tokens (for relayer)
+
+### Smart Contract Deployment
+Before running the backend, deploy the `GasFreeAI.sol` contract using **Remix** on your chosen EVM network (e.g., Moonbase Alpha). After deployment, copy the contract address and set it in the backend `.env` file.
+
+### Backend Setup
+1. Navigate to the backend folder:
+   ```bash
+   cd backend
+   ```
+2. Install dependencies:
+   ```bash
+   npm install
+   ```
+3. Copy the environment example and fill in your values:
+   ```bash
+   cp .env.example .env
+   ```
+   Edit `.env` with your private key, contract address, and RPC URL.
+4. Start the server:
+   ```bash
+   node index.js
+   ```
+   The server will run on `http://localhost:3000`.
+
+### Frontend Setup (Example DApp)
+1. Navigate to the frontend folder:
+   ```bash
+   cd frontend
+   ```
+2. Install dependencies:
+   ```bash
+   npm install
+   ```
+3. Start the development server:
+   ```bash
+   npm run dev
+   ```
+   The app will be available at `http://localhost:5173`.
+
+### Using the SDK
+Include the SDK in your HTML:
+```html
+<script src="https://your-server.com/gasfree.js?apiUrl=http://localhost:3000"></script>
+```
+Then call `GasFree.start()`:
+```javascript
+GasFree.start({
+  userAddress: '0x...',
+  onSuccess: (result) => console.log('Reward:', result),
+  onError: (err) => console.error(err)
+});
+```
+
+---
+
+## 📄 License
+MIT

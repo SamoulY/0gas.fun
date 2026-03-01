@@ -1,4 +1,4 @@
-# GasFree – The Universal Gas Abstraction Layer
+# GasFree - 0gas.fun – The Universal Gas Abstraction Layer
 
 
 ---

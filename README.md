@@ -74,6 +74,8 @@
 - `frontend/` – Example React app demonstrating the user flow.
 - `sdk/` – Lightweight JavaScript SDK for embedding GasFree into any DApp with one line.
 - `contract/` – Solidity smart contract (`GasFreeAI.sol`) that records user verification and ad‑watching status.
+- `test/` – Repository-level tests for session flow, ad control, attestation, and API smoke checks.
+- `tmp/` – Temporary runtime and test artifacts (created/used by test flows).
 
 ---
 

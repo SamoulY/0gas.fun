@@ -1,0 +1,8 @@
+backend/.env
+frontend/.env
+
+# Runtime / test temporary artifacts
+tmp/*
+tmp/**
+!tmp/.gitkeep
+!tmp/README.md

@@ -12,16 +12,24 @@ const contractABI = [
   "event UserAdWatched(address indexed user, uint256 timestamp)"
 ];
 
-// 初始化provider和钱包
-const provider = new ethers.JsonRpcProvider(config.rpcUrl);
-const wallet = new ethers.Wallet(config.privateKey, provider);
+const isChainEnabled = Boolean(
+  config.privateKey && config.rpcUrl && config.contractAddress
+);
 
-// 创建合约实例
-const contract = new ethers.Contract(config.contractAddress, contractABI, wallet);
+let provider = null;
+let wallet = null;
+let contract = null;
+
+if (isChainEnabled) {
+  provider = new ethers.JsonRpcProvider(config.rpcUrl);
+  wallet = new ethers.Wallet(config.privateKey, provider);
+  contract = new ethers.Contract(config.contractAddress, contractABI, wallet);
+}
 
 module.exports = {
   provider,
   wallet,
   contract,
   contractABI, // 如果需要暴露
+  isChainEnabled,
 };

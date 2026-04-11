@@ -86,15 +86,35 @@
     return null;
   }
 
-  function computeAverageCost(existingQuantity, existingAverageCost, buyQuantity, buyPrice) {
-    const totalQuantity = existingQuantity + buyQuantity;
-    if (totalQuantity <= EPSILON) {
-      return null;
+  function createPosition(initialCash, initialPrice) {
+    const shares = initialCash / initialPrice;
+    return {
+      shares,
+      netCost: initialCash,
+      avgCost: shares > EPSILON ? initialCash / shares : null,
+    };
+  }
+
+  function applyTradeToPosition(position, side, quantity, price) {
+    const cash = quantity * price;
+
+    if (side === "buy") {
+      position.shares += quantity;
+      position.netCost += cash;
+    } else {
+      position.shares -= quantity;
+      position.netCost -= cash;
     }
 
-    const previousCost = existingQuantity * existingAverageCost;
-    const addedCost = buyQuantity * buyPrice;
-    return (previousCost + addedCost) / totalQuantity;
+    if (position.shares <= EPSILON) {
+      position.shares = 0;
+      position.netCost = 0;
+      position.avgCost = null;
+    } else {
+      position.avgCost = position.netCost / position.shares;
+    }
+
+    return cash;
   }
 
   function createMarker(side, date, price, reason) {
@@ -150,8 +170,8 @@
       portfolioValue: round(finalPoint.value, 2),
       totalReturnPct: round(finalPoint.returnPct, 2),
       rebalanceCount,
-      assetValueA: round(state.sharesA * state.lastCloseA, 2),
-      assetValueB: round(state.sharesB * state.lastCloseB, 2),
+      assetValueA: round(state.positionA.shares * state.lastCloseA, 2),
+      assetValueB: round(state.positionB.shares * state.lastCloseB, 2),
       assetAId,
       assetBId,
     };
@@ -210,10 +230,8 @@
     const initialCandleB = mapB.get(startDate);
 
     const state = {
-      sharesA: (configuredCapital / 2) / initialCandleA.close,
-      sharesB: (configuredCapital / 2) / initialCandleB.close,
-      avgCostA: initialCandleA.close,
-      avgCostB: initialCandleB.close,
+      positionA: createPosition(configuredCapital / 2, initialCandleA.close),
+      positionB: createPosition(configuredCapital / 2, initialCandleB.close),
       lastCloseA: initialCandleA.close,
       lastCloseB: initialCandleB.close,
       pendingTransfer: null,
@@ -223,13 +241,13 @@
       A: {
         meta: assetAPayload.meta,
         candles: scopedA,
-        costHistory: [[startDate, round(initialCandleA.close, 4)]],
+        costHistory: [[startDate, round(state.positionA.avgCost, 4)]],
         markers: [createMarker("buy", startDate, initialCandleA.close, "初始建仓")],
       },
       B: {
         meta: assetBPayload.meta,
         candles: scopedB,
-        costHistory: [[startDate, round(initialCandleB.close, 4)]],
+        costHistory: [[startDate, round(state.positionB.avgCost, 4)]],
         markers: [createMarker("buy", startDate, initialCandleB.close, "初始建仓")],
       },
     };
@@ -243,7 +261,7 @@
         assetLabel: assetAPayload.meta.label,
         date: startDate,
         price: round(initialCandleA.close, 4),
-        quantity: round(state.sharesA, 6),
+        quantity: round(state.positionA.shares, 6),
         cash: round(configuredCapital / 2, 2),
       },
       {
@@ -254,7 +272,7 @@
         assetLabel: assetBPayload.meta.label,
         date: startDate,
         price: round(initialCandleB.close, 4),
-        quantity: round(state.sharesB, 6),
+        quantity: round(state.positionB.shares, 6),
         cash: round(configuredCapital / 2, 2),
       },
     ];
@@ -287,26 +305,11 @@
         const targetKey = state.pendingTransfer.targetKey;
         const targetCandle = targetKey === "A" ? candleA : candleB;
         const targetSeries = series[targetKey];
+        const targetPosition = targetKey === "A" ? state.positionA : state.positionB;
         const targetPrice = targetCandle.close;
         const buyQuantity = state.pendingTransfer.cash / targetPrice;
 
-        if (targetKey === "A") {
-          state.avgCostA = computeAverageCost(
-            state.sharesA,
-            state.avgCostA ?? 0,
-            buyQuantity,
-            targetPrice
-          );
-          state.sharesA += buyQuantity;
-        } else {
-          state.avgCostB = computeAverageCost(
-            state.sharesB,
-            state.avgCostB ?? 0,
-            buyQuantity,
-            targetPrice
-          );
-          state.sharesB += buyQuantity;
-        }
+        applyTradeToPosition(targetPosition, "buy", buyQuantity, targetPrice);
 
         targetSeries.markers.push(
           createMarker("buy", date, targetPrice, "共同交易日完成对冲买入")
@@ -329,8 +332,8 @@
       }
 
       if (!executedPendingBuyToday && !state.pendingTransfer) {
-        const valueA = state.sharesA * state.lastCloseA;
-        const valueB = state.sharesB * state.lastCloseB;
+        const valueA = state.positionA.shares * state.lastCloseA;
+        const valueB = state.positionB.shares * state.lastCloseB;
         const largerKey = valueA >= valueB ? "A" : "B";
         const smallerKey = largerKey === "A" ? "B" : "A";
         const largerValue = Math.max(valueA, valueB);
@@ -344,36 +347,23 @@
           if (scheduledBuyDate && triggerRatio + EPSILON >= thresholdRate) {
             const sellAmount = diffValue / 2;
             const sellCandle = largerKey === "A" ? candleA : candleB;
+            const sellPosition = largerKey === "A" ? state.positionA : state.positionB;
+            const sellSeries = series[largerKey];
             const sellPrice = sellCandle.close;
-            const currentShares = largerKey === "A" ? state.sharesA : state.sharesB;
-            const sellQuantity = Math.min(currentShares, sellAmount / sellPrice);
-            const cash = sellQuantity * sellPrice;
-            const sourceSeries = series[largerKey];
+            const sellQuantity = Math.min(sellPosition.shares, sellAmount / sellPrice);
 
             if (sellQuantity > EPSILON) {
-              if (largerKey === "A") {
-                state.sharesA -= sellQuantity;
-                if (state.sharesA <= EPSILON) {
-                  state.sharesA = 0;
-                  state.avgCostA = null;
-                }
-              } else {
-                state.sharesB -= sellQuantity;
-                if (state.sharesB <= EPSILON) {
-                  state.sharesB = 0;
-                  state.avgCostB = null;
-                }
-              }
+              const cash = applyTradeToPosition(sellPosition, "sell", sellQuantity, sellPrice);
 
-              sourceSeries.markers.push(
+              sellSeries.markers.push(
                 createMarker("sell", date, sellPrice, "超出阈值后卖出差额的一半")
               );
               transactions.push({
                 type: "sell",
                 phase: "rebalance",
                 assetKey: largerKey,
-                assetId: sourceSeries.meta.id,
-                assetLabel: sourceSeries.meta.label,
+                assetId: sellSeries.meta.id,
+                assetLabel: sellSeries.meta.label,
                 date,
                 price: round(sellPrice, 4),
                 quantity: round(sellQuantity, 6),
@@ -398,20 +388,24 @@
       if (tradedA) {
         series.A.costHistory.push([
           date,
-          state.sharesA > EPSILON && state.avgCostA !== null ? round(state.avgCostA, 4) : null,
+          state.positionA.shares > EPSILON && state.positionA.avgCost !== null
+            ? round(state.positionA.avgCost, 4)
+            : null,
         ]);
       }
 
       if (tradedB) {
         series.B.costHistory.push([
           date,
-          state.sharesB > EPSILON && state.avgCostB !== null ? round(state.avgCostB, 4) : null,
+          state.positionB.shares > EPSILON && state.positionB.avgCost !== null
+            ? round(state.positionB.avgCost, 4)
+            : null,
         ]);
       }
 
       const portfolioValue =
-        state.sharesA * state.lastCloseA +
-        state.sharesB * state.lastCloseB +
+        state.positionA.shares * state.lastCloseA +
+        state.positionB.shares * state.lastCloseB +
         (state.pendingTransfer ? state.pendingTransfer.cash : 0);
 
       portfolioCurve.push({
@@ -449,6 +443,7 @@
 
   global.HedgeDemoSimulator = {
     DEFAULT_INITIAL_CAPITAL,
+    applyTradeToPosition,
     runSimulation,
   };
 })(window);

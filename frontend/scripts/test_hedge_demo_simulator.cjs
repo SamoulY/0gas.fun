@@ -18,7 +18,20 @@ vm.runInNewContext(fs.readFileSync(simulatorPath, "utf8"), context, {
   filename: simulatorPath,
 });
 
-const { runSimulation } = context.HedgeDemoSimulator;
+const { applyTradeToPosition, runSimulation } = context.HedgeDemoSimulator;
+
+const costExample = {
+  shares: 10,
+  netCost: 100,
+  avgCost: 10,
+};
+
+applyTradeToPosition(costExample, "sell", 2, 12);
+applyTradeToPosition(costExample, "buy", 1, 11);
+applyTradeToPosition(costExample, "buy", 1, 10);
+
+assert.equal(costExample.shares, 10);
+assert.equal(Number(costExample.avgCost.toFixed(1)), 9.7, "expected diluted average cost to be 9.7");
 
 const assetA = {
   meta: { id: "A", label: "Asset A" },

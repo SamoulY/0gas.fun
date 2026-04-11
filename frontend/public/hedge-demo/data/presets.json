@@ -1,0 +1,33 @@
+{
+  "version": 1,
+  "presets": [
+    {
+      "id": "btc-qqq",
+      "label": "BTC / USD vs QQQ",
+      "assetA": "BTC-USD",
+      "assetB": "QQQ",
+      "thresholdPercent": 0.5
+    },
+    {
+      "id": "btc-gld",
+      "label": "BTC / USD vs GLD",
+      "assetA": "BTC-USD",
+      "assetB": "GLD",
+      "thresholdPercent": 0.5
+    },
+    {
+      "id": "spy-qqq",
+      "label": "SPY vs QQQ",
+      "assetA": "SPY",
+      "assetB": "QQQ",
+      "thresholdPercent": 0.5
+    },
+    {
+      "id": "aapl-msft",
+      "label": "AAPL vs MSFT",
+      "assetA": "AAPL",
+      "assetB": "MSFT",
+      "thresholdPercent": 0.5
+    }
+  ]
+}

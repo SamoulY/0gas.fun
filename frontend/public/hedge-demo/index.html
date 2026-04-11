@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>GasFree Hedge Demo</title>
+    <link rel="stylesheet" href="./styles.css" />
+  </head>
+  <body>
+    <div class="page-shell">
+      <header class="hero">
+        <div>
+          <p class="eyebrow">0gas.fun Demo</p>
+          <h1>双标的对冲算法演示</h1>
+          <p class="hero-copy">
+            两个标的各自 50% 建仓，超出阈值后卖出较大资产差额的一半，并在下一共同交易日买入另一标的。
+          </p>
+        </div>
+        <div class="return-panel" id="portfolioReturnCard">
+          <span class="return-label">总组合收益率</span>
+          <div class="return-value neutral" id="portfolioReturnValueWrap">
+            <span class="return-arrow" id="portfolioReturnArrow">→</span>
+            <span id="portfolioReturnValue">0.00%</span>
+          </div>
+          <div class="return-meta">
+            <span id="portfolioValue">组合市值: -</span>
+            <span id="initialCapitalValue">初始金额: -</span>
+            <span id="rebalanceCount">调仓次数: -</span>
+          </div>
+        </div>
+      </header>
+
+      <section class="card controls-card">
+        <div class="controls-grid">
+          <label class="field">
+            <span>预设组合</span>
+            <select id="presetSelect"></select>
+          </label>
+          <label class="field">
+            <span>标的 A</span>
+            <select id="assetASelect"></select>
+          </label>
+          <label class="field">
+            <span>标的 B</span>
+            <select id="assetBSelect"></select>
+          </label>
+          <label class="field">
+            <span>触发百分比</span>
+            <div class="percent-input">
+              <input id="thresholdInput" type="number" min="0.01" step="0.01" value="0.5" />
+              <span>%</span>
+            </div>
+          </label>
+          <label class="field">
+            <span>起始日期</span>
+            <input id="startDateInput" type="date" />
+          </label>
+          <label class="field">
+            <span>结束日期</span>
+            <input id="endDateInput" type="date" />
+          </label>
+          <label class="field">
+            <span>初始金额</span>
+            <input id="initialCapitalInput" type="number" min="1" step="1000" value="100000" />
+          </label>
+        </div>
+
+        <div class="controls-footer">
+          <div>
+            <div class="status-block">
+              <span class="status-dot" id="statusDot"></span>
+              <span id="statusText">等待加载离线行情数据...</span>
+            </div>
+            <div class="controls-note">默认支持分数股，允许买入 0.x 股或 0.x 枚。</div>
+          </div>
+          <div class="button-row">
+            <button id="runSimulationButton" type="button">重新计算</button>
+            <button id="resetViewButton" type="button" class="secondary">重置视图</button>
+          </div>
+        </div>
+      </section>
+
+      <section class="chart-grid">
+        <article class="card chart-card">
+          <div class="chart-head">
+            <div>
+              <p class="chart-kicker">Asset A</p>
+              <h2 id="assetATitle">-</h2>
+            </div>
+            <div class="chart-meta" id="assetAMeta">-</div>
+          </div>
+          <div id="klineAChart" class="chart chart-kline"></div>
+        </article>
+
+        <article class="card chart-card">
+          <div class="chart-head">
+            <div>
+              <p class="chart-kicker">Asset B</p>
+              <h2 id="assetBTitle">-</h2>
+            </div>
+            <div class="chart-meta" id="assetBMeta">-</div>
+          </div>
+          <div id="klineBChart" class="chart chart-kline"></div>
+        </article>
+
+        <article class="card chart-card">
+          <div class="chart-head">
+            <div>
+              <p class="chart-kicker">Asset A Cost</p>
+              <h2 id="assetACostTitle">-</h2>
+            </div>
+            <div class="chart-meta">持仓加权平均成本</div>
+          </div>
+          <div id="costAChart" class="chart chart-cost"></div>
+        </article>
+
+        <article class="card chart-card">
+          <div class="chart-head">
+            <div>
+              <p class="chart-kicker">Asset B Cost</p>
+              <h2 id="assetBCostTitle">-</h2>
+            </div>
+            <div class="chart-meta">持仓加权平均成本</div>
+          </div>
+          <div id="costBChart" class="chart chart-cost"></div>
+        </article>
+      </section>
+
+      <section class="card events-card">
+        <div class="section-head">
+          <h2>最近调仓记录</h2>
+          <span id="eventSummary">-</span>
+        </div>
+        <div id="eventList" class="event-list"></div>
+      </section>
+    </div>
+
+    <script src="./vendor/echarts.min.js"></script>
+    <script src="./lib/data-provider.js"></script>
+    <script src="./lib/simulator.js"></script>
+    <script src="./lib/renderers.js"></script>
+    <script src="./app.js"></script>
+  </body>
+</html>

@@ -1,6 +1,15 @@
 backend/.env
 frontend/.env
 
+# Frontend dependencies and build artifacts
+frontend/node_modules/
+frontend/dist/
+frontend/public/hedge-demo/dist/
+
+# Python cache artifacts
+frontend/scripts/__pycache__/
+*.pyc
+
 # Runtime / test temporary artifacts
 tmp/*
 tmp/**

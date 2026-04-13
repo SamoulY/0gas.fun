@@ -148,3 +148,56 @@ GasFree.start({
 
 ## 📄 License
 MIT
+
+---
+
+## Hedge Demo
+
+仓库中新增了一个独立静态对冲算法演示页，位置在：
+
+```text
+frontend/public/hedge-demo/
+```
+
+安装依赖：
+
+```bash
+cd frontend
+npm install
+```
+
+开发模式：
+
+```bash
+npm run hedge:dev
+```
+
+打开：
+
+```text
+http://localhost:5173/hedge-demo/index.html
+```
+
+刷新离线数据：
+
+```bash
+npm run hedge:data
+```
+
+生成可双击打开的单文件 HTML：
+
+```bash
+npm run hedge:single
+```
+
+一键构建前端并生成单文件：
+
+```bash
+npm run hedge:build
+```
+
+输出文件：
+
+```text
+frontend/public/hedge-demo/dist/hedge-demo.single.html
+```

@@ -1,0 +1,93 @@
+{
+  "version": 1,
+  "assets": [
+    {
+      "id": "BTC-USD",
+      "label": "BTC / USD",
+      "assetClass": "crypto",
+      "provider": "ccxt",
+      "exchange": "kraken",
+      "symbol": "BTC/USD",
+      "timeframe": "1d",
+      "currency": "USD",
+      "cacheFile": "market/BTC-USD.json"
+    },
+    {
+      "id": "ETH-USD",
+      "label": "ETH / USD",
+      "assetClass": "crypto",
+      "provider": "ccxt",
+      "exchange": "kraken",
+      "symbol": "ETH/USD",
+      "timeframe": "1d",
+      "currency": "USD",
+      "cacheFile": "market/ETH-USD.json"
+    },
+    {
+      "id": "SOL-USD",
+      "label": "SOL / USD",
+      "assetClass": "crypto",
+      "provider": "ccxt",
+      "exchange": "kraken",
+      "symbol": "SOL/USD",
+      "timeframe": "1d",
+      "currency": "USD",
+      "cacheFile": "market/SOL-USD.json"
+    },
+    {
+      "id": "SPY",
+      "label": "SPDR S&P 500 ETF",
+      "assetClass": "etf",
+      "provider": "akshare",
+      "fetcher": "stock_us_daily",
+      "symbol": "SPY",
+      "adjust": "qfq",
+      "currency": "USD",
+      "cacheFile": "market/SPY.json"
+    },
+    {
+      "id": "QQQ",
+      "label": "Invesco QQQ Trust",
+      "assetClass": "etf",
+      "provider": "akshare",
+      "fetcher": "stock_us_daily",
+      "symbol": "QQQ",
+      "adjust": "qfq",
+      "currency": "USD",
+      "cacheFile": "market/QQQ.json"
+    },
+    {
+      "id": "AAPL",
+      "label": "Apple Inc.",
+      "assetClass": "stock",
+      "provider": "akshare",
+      "fetcher": "stock_us_daily",
+      "symbol": "AAPL",
+      "adjust": "qfq",
+      "currency": "USD",
+      "cacheFile": "market/AAPL.json"
+    },
+    {
+      "id": "MSFT",
+      "label": "Microsoft Corp.",
+      "assetClass": "stock",
+      "provider": "akshare",
+      "fetcher": "stock_us_daily",
+      "symbol": "MSFT",
+      "adjust": "qfq",
+      "currency": "USD",
+      "cacheFile": "market/MSFT.json"
+    },
+    {
+      "id": "GLD",
+      "label": "SPDR Gold Shares",
+      "assetClass": "etf",
+      "provider": "akshare",
+      "fetcher": "stock_us_daily",
+      "symbol": "GLD",
+      "adjust": "qfq",
+      "currency": "USD",
+      "cacheFile": "market/GLD.json"
+    }
+  ]
+}

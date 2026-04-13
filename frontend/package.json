@@ -5,6 +5,10 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
+    "hedge:dev": "vite --open /hedge-demo/index.html",
+    "hedge:data": "python scripts/fetch_market_data.py",
+    "hedge:single": "python scripts/build_single_html.py",
+    "hedge:build": "npm run build && npm run hedge:single",
     "build": "vite build",
     "lint": "eslint .",
     "preview": "vite preview"
